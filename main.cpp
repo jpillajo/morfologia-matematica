@@ -10,7 +10,6 @@ vector<vector<element>> erosion(vector<vector<element>> image,vector<vector<elem
 element maximo(vector<element> elements);
 element minimo(vector<element> elements);
 
-
 int main(int argc, char** argv ){
         vector<vector<int>> data
                 {
