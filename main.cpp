@@ -25,13 +25,10 @@ int main(int argc, char** argv ){
                                                       { 1, 1, 1},
                                                       { 0, 1, 0}};;
 
-
         data = erosion(data, elementoEstructurante);
         cout << "Filas:"<<data.size()<<"; Columnas:"<<data[0].size() << endl;
     return 0;
 }
-
-
 
 /*METODOS*/
 //   MAXIMO y MINIMO calculation
@@ -63,11 +60,9 @@ element minimo(vector<element> elements)
    return min;
 }
 
-
 vector<vector<element>> dilatacion(vector<vector<element>> image,vector<vector<element>> elementoEstructurante)
 {
     vector<vector<element>> img_result = image;
-    //N width, M height
     element N = image[0].size();
     element M = image.size();
     element Nestructurante = elementoEstructurante[0].size();
@@ -75,7 +70,6 @@ vector<vector<element>> dilatacion(vector<vector<element>> image,vector<vector<e
 
     int x,y,i,j;
 
-    //m y n de estructurante, es decir, del kernel cuanto vale M y N
     int m = Mestructurante/2;
     int n = Nestructurante/2;
 
@@ -96,7 +90,6 @@ vector<vector<element>> dilatacion(vector<vector<element>> image,vector<vector<e
             xx = x-n;
             yy++;
          }
-
          img_result[y][x] = maximo(window);
       }
    return img_result;
@@ -108,7 +101,6 @@ vector<vector<element>> dilatacion(vector<vector<element>> image,vector<vector<e
 vector<vector<element>> erosion(vector<vector<element>> image,vector<vector<element>> elementoEstructurante)
 {
     vector<vector<element>> img_result = image;
-    //N width, M height
     element N = image[0].size();
     element M = image.size();
     element Nestructurante = elementoEstructurante[0].size();
@@ -118,7 +110,6 @@ vector<vector<element>> erosion(vector<vector<element>> image,vector<vector<elem
 
     int x,y,i,j;
 
-    //m y n de estructurante, es decir, del kernel cuanto vale M y N
     int m = Mestructurante/2;
     int n = Nestructurante/2;
 
@@ -132,7 +123,7 @@ vector<vector<element>> erosion(vector<vector<element>> image,vector<vector<elem
          for(i=0; i<Mestructurante; i++){
             for(j=0; j<Nestructurante; j++){
                 if(elementoEstructurante[i][j] == 1){
-                    window.push_back(image[yy][xx]);
+                    cppwindow.push_back(image[yy][xx]);
                 }
                 xx++;
             }
