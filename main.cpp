@@ -7,28 +7,32 @@ typedef int element;
 
 vector<vector<element>> dilatacion(vector<vector<element>> image,vector<vector<element>> elementoEstructurante);
 vector<vector<element>> erosion(vector<vector<element>> image,vector<vector<element>> elementoEstructurante);
+vector<vector<element>> apertura(vector<vector<element>> image,vector<vector<element>> elementoEstructurante);
+vector<vector<element>> cierre(vector<vector<element>> image,vector<vector<element>> elementoEstructurante);
 element maximo(vector<element> elements);
 element minimo(vector<element> elements);
 
 int main(int argc, char** argv ){
-        vector<vector<int>> data
-                {
-                    {1, 2, 3, 100, 210, 40, 50},
-                    {4, 5, 6, 110, 230, 30, 55},
-                    {7, 8, 9, 140, 210, 20, 52},
-                    {4, 27, 36, 160, 20, 60, 50},
-                    {5, 58, 65, 10, 240, 70, 75},
-                    {7, 89, 94, 40, 220, 80, 82}
-                };
-        //creando elemento estructurante
-        vector<vector<element>> elementoEstructurante{{ 0, 1, 0 },
-                                                      { 1, 1, 1},
-                                                      { 0, 1, 0}};;
+    vector<vector<int>> data {{48, 2, 13, 190, 220, 41, 15},
+                              {12, 51, 96, 170, 210, 35, 51},
+                              {96, 84, 92, 150, 250, 10, 53},
+                              {41, 57, 3, 180, 90, 60, 20},
+                              {55, 98, 6, 12, 20, 250, 65},
+                              {17, 9, 44, 10, 22, 180, 52}};
 
-        data = erosion(data, elementoEstructurante);
-        cout << "Filas:"<<data.size()<<"; Columnas:"<<data[0].size() << endl;
+    //creando elemento estructurante
+    vector<vector<element>> elementoEstructurante{{ 0, 1, 0},
+                                                  { 1, 1, 1},
+                                                  { 0, 1, 0}};
+
+    data = erosion(data, elementoEstructurante);
+    //data = dilatacion(data, elementoEstructurante);
+    //data = apertura(data, elementoEstructurante);
+    //data = cierre(data, elementoEstructurante);
+    cout << "Filas:"<<data.size()<<"; Columnas:"<<data[0].size() << endl;
     return 0;
 }
+
 
 /*METODOS*/
 //   MAXIMO y MINIMO calculation
@@ -47,9 +51,10 @@ element maximo(vector<element> elements)
    return max;
 }
 
+
 element minimo(vector<element> elements)
 {
-   element min=1000000;
+   element min = 1000000;
    //   Order elements (only half of them)
    for (int i = 0; i < elements.size(); ++i)
    {
@@ -60,9 +65,11 @@ element minimo(vector<element> elements)
    return min;
 }
 
+
 vector<vector<element>> dilatacion(vector<vector<element>> image,vector<vector<element>> elementoEstructurante)
 {
     vector<vector<element>> img_result = image;
+    //N width, M height
     element N = image[0].size();
     element M = image.size();
     element Nestructurante = elementoEstructurante[0].size();
@@ -70,14 +77,14 @@ vector<vector<element>> dilatacion(vector<vector<element>> image,vector<vector<e
 
     int x,y,i,j;
 
+    //m y n de estructurante, es decir, del kernel cuanto vale M y N
     int m = Mestructurante/2;
     int n = Nestructurante/2;
 
-   //   Move window through all elements of the image
-   for (y = m; y < M - m ; ++y)
+    //   Move window through all elements of the image
+    for (y = m; y < M - m ; ++y)
       for (x = n; x < N - n; ++x)
       {
-        //cout<<y<<" "<<x<<endl;
          vector<element> window;
          int xx = x-n; int yy= y-m;
          for(i=0; i<Mestructurante; i++){
@@ -96,25 +103,23 @@ vector<vector<element>> dilatacion(vector<vector<element>> image,vector<vector<e
 }
 
 
-
-
 vector<vector<element>> erosion(vector<vector<element>> image,vector<vector<element>> elementoEstructurante)
 {
     vector<vector<element>> img_result = image;
+    //N width, M height
     element N = image[0].size();
     element M = image.size();
     element Nestructurante = elementoEstructurante[0].size();
     element Mestructurante = elementoEstructurante.size();
-    //tamano de los elementos de la ventana
-    int tW = Nestructurante * Mestructurante;
 
     int x,y,i,j;
 
+    //m y n de estructurante, es decir, del kernel cuanto vale M y N
     int m = Mestructurante/2;
     int n = Nestructurante/2;
 
-   //   Move window through all elements of the image
-   for (y = m; y < M - m ; ++y)
+    //Move window through all elements of the image
+    for (y = m; y < M - m ; ++y)
       for (x = n; x < N - n; ++x)
       {
         //cout<<y<<" "<<x<<endl;
@@ -123,7 +128,7 @@ vector<vector<element>> erosion(vector<vector<element>> image,vector<vector<elem
          for(i=0; i<Mestructurante; i++){
             for(j=0; j<Nestructurante; j++){
                 if(elementoEstructurante[i][j] == 1){
-                    cppwindow.push_back(image[yy][xx]);
+                    window.push_back(image[yy][xx]);
                 }
                 xx++;
             }
@@ -133,5 +138,27 @@ vector<vector<element>> erosion(vector<vector<element>> image,vector<vector<elem
 
          img_result[y][x] = minimo(window);
       }
-   return img_result;
+    return img_result;
+}
+
+
+vector<vector<element>> apertura(vector<vector<element>> image,vector<vector<element>> elementoEstructurante)
+{
+    vector<vector<element>> img_result;
+
+    img_result = erosion(image, elementoEstructurante);
+    img_result = dilatacion(img_result, elementoEstructurante);
+
+    return img_result;
+}
+
+
+vector<vector<element>> cierre(vector<vector<element>> image,vector<vector<element>> elementoEstructurante)
+{
+    vector<vector<element>> img_result;
+
+    img_result = dilatacion(image, elementoEstructurante);
+    img_result = erosion(img_result, elementoEstructurante);
+
+    return img_result;
 }
